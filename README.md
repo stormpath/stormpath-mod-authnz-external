@@ -38,7 +38,7 @@ The instructions below are specific to Ubuntu/Debian, but the steps are mostly t
 6.  Update your host (or virtual host) configuration to reference the `stormpath.sh` authentication script.  For example, assuming a host `foo.com`:
 
     ```apache
-    <VirtualHost *:80>
+    <VirtualHost *:443>
 
         ServerName foo.com
         ServerAdmin webmaster@foo.com
