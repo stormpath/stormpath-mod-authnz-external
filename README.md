@@ -23,17 +23,17 @@ Using Stormpath to secure the Apache web server
 
     ```apache
     <VirtualHost *:80>
-    
+
         ServerName foo.com
         ServerAdmin webmaster@foo.com
-    
+
         ErrorLog ${APACHE_LOG_DIR}/foo.com.error.log
         CustomLog ${APACHE_LOG_DIR}/foo.com.access.log combined
-    
+
         DocumentRoot /var/www/vhosts/foo.com
-    
+
         DefineExternalAuth stormpath pipe "/PATH/TO/stormpath.sh /PATH/TO/YOUR/stormpath/apiKey.properties YOUR_STORMPATH_APPLICATION_HREF"
-    
+
         <Directory /var/www/vhosts/foo.com/downloads>
             AuthType Basic
             AuthName "Authenticated Users Only"
@@ -41,12 +41,12 @@ Using Stormpath to secure the Apache web server
             AuthExternal stormpath
             require valid-user
         </Directory>
-    
+
     </VirtualHost>
     ```
 
     where:
-    
+
     * `/PATH/TO/stormpath.sh` is the path on your local filesystem to the `stormpath.sh` file you downloaded from this git repository
     * `/PATH/TO/YOUR/stormpath/apiKey.properties` is the path on your local filesystem to your personal stormpath `apiKey.properties` file.  This *must* begin with `/`, i.e. it must be a fully qualified path to a file on your operating system.
     * `YOUR_STORMPATH_APPLICATION_HREF` is the fully qualified `href` of your application in href that your users must have access to.
