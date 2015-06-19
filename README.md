@@ -74,7 +74,7 @@ In the above example, the `require valid-user` line ensures that only authentica
 In addition to authenticating the users, you can also require them to be in
 a specific group or groups. To configure group membership check:
 
-1. Download the `jq` command line tool (needed to parse JSON responses):
+1. Install the `jq` command line tool (needed to parse JSON responses):
 
     ```bash
     sudo apt-get install jq
@@ -84,6 +84,7 @@ a specific group or groups. To configure group membership check:
 and executable by the apache2 system user as in step 5 above):
     ```bash
     curl -O https://raw.githubusercontent.com/stormpath/stormpath-mod-authnz-external/master/stormpath-group.sh
+    ```
 
 3. Update your apache2 host configuration to reference the `stormpath-group.sh`
 script for group membership checks. Assuming a configuration like the above,
@@ -100,7 +101,6 @@ extend it to something like:
         DocumentRoot /var/www/vhosts/foo.com
 
         DefineExternalAuth stormpath pipe "/PATH/TO/stormpath.sh /PATH/TO/YOUR/stormpath/apiKey.properties YOUR_STORMPATH_APPLICATION_HREF"
-
         DefineExternalGroup stormpath pipe "/PATH/TO/stormpath-group.sh /PATH/TO/YOUR/stormpath/apiKey.properties USERNAME_OR_EMAIL"
 
         <Directory /var/www/vhosts/foo.com/downloads>
@@ -108,6 +108,7 @@ extend it to something like:
             AuthName "Authorized Users Only"
             AuthBasicProvider external
             AuthExternal stormpath
+            GroupExternal stormpath
             <RequireAll>
                 require valid-user
                 require external-group YOUR_STORMPATH_GROUP_HREF
@@ -122,4 +123,4 @@ extend it to something like:
     * `YOUR_STORMPATH_GROUP_HREF` is the fully qualified href of your Stormpath
     group record in which the user must be to be authorized, or a list of
     space-separeted group hrefs if user must be in more than one group; note
-    that this href (or list) must not be in double qutes
+    that this href (or list) must not be in double quotes.
