@@ -112,6 +112,7 @@ extend it to something like:
             <RequireAll>
                 require valid-user
                 require external-group YOUR_STORMPATH_GROUP_HREF
+            </RequireAll>
         </Directory>
 
     </VirtualHost>
