@@ -41,9 +41,12 @@ read -n1024 password
 
 base64Value=$(echo -ne "$user:$password" | openssl enc -base64)
 
-status=$(/usr/bin/curl -sw '%{http_code}' -X POST -u "$apiKeyId":"$apiKeySecret" -H 'Accept: application/json' -H 'Content-Type: application/json' -d "{\"type\": \"basic\", \"value\": \"$base64Value\"}" -o /dev/null "$appHref/loginAttempts")
+body=$(/usr/bin/curl -s -X POST -u "$apiKeyId":"$apiKeySecret" -H 'Accept: application/json' -H 'Content-Type: application/json' -d "{\"type\": \"basic\", \"value\": \"$base64Value\"}" "$appHref/loginAttempts")
+
+status=$(/usr/bin/curl -s -w '%{http_code}' -X POST -u "$apiKeyId":"$apiKeySecret" -H 'Accept: application/json' -H 'Content-Type: application/json' -d "{\"type\": \"basic\", \"value\": \"$base64Value\"}" -o /dev/null "$appHref/loginAttempts")
 
 if [ "$status" -ne 200 ]; then
+    echoerr "Error occurred when logging in $user:$password. Response Body:  $body"
     exit $status
 fi
 
