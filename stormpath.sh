@@ -39,7 +39,7 @@ done
 read -n1024 user
 read -n1024 password
 
-base64Value=$(echo -ne "$user:$password" | openssl enc -base64)
+base64Value=$(echo -ne "$user:$password" | openssl enc -base64 -A)
 
 status=$(/usr/bin/curl -sw '%{http_code}' -X POST -u "$apiKeyId":"$apiKeySecret" -H 'Accept: application/json' -H 'Content-Type: application/json' -d "{\"type\": \"basic\", \"value\": \"$base64Value\"}" -o /dev/null "$appHref/loginAttempts")
 
