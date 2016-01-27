@@ -46,7 +46,7 @@ IFS=' ' read -n8192 -a groups
 
 for groupHref in "${groups[@]}"; do
   echo "CHECKING ${user} IN ${groupHref}" >>/tmp/debug.log
-  resp=$(/usr/bin/curl -vu "$apiKeyId":"$apiKeySecret" -H 'Accept: application/json' -H 'Content-Type: application/json' -G --data-urlencode "$userfield=$user" "$groupHref/accounts"  | jq '.size')
+  resp=$(/usr/bin/curl -u "$apiKeyId":"$apiKeySecret" -H 'Accept: application/json' -H 'Content-Type: application/json' -G --data-urlencode "$userfield=$user" "$groupHref/accounts"  | jq '.size')
   if [ -z "$resp" -o "$resp" == "null" ]; then
       exit 1
   fi
