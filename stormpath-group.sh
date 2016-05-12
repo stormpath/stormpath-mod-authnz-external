@@ -15,8 +15,21 @@ esac
 
 filename="$1"
 userfield="$2"
+matchtype="$3"
 apiKeyId=""
 apiKeySecret=""
+
+case "$matchtype" in
+  "any" | "all")
+    ;;
+  "")
+    matchtype="all"
+    ;;
+  *)
+    echoerr "Third argument, if present, must be either 'any' or 'all' (default)";
+    exit 2;
+esac
+
 
 IFS=$'\n'; GLOBIGNORE='*' :; LINES=($(cat $1))
 for i in "${LINES[@]}"; do
@@ -44,15 +57,37 @@ done
 read -n1024 user
 IFS=' ' read -n8192 -a groups
 
+matches=""
+
 for groupHref in "${groups[@]}"; do
-  echo "CHECKING ${user} IN ${groupHref}" >>/tmp/debug.log
-  resp=$(/usr/bin/curl -u "$apiKeyId":"$apiKeySecret" -H 'Accept: application/json' -H 'Content-Type: application/json' -G --data-urlencode "$userfield=$user" "$groupHref/accounts"  | jq '.size')
+  resp=$(/usr/bin/curl -s -u "$apiKeyId":"$apiKeySecret" -H 'Accept: application/json' -H 'Content-Type: application/json' -G --data-urlencode "$userfield=$user" "$groupHref/accounts"  | jq '.size')
+  match=1
   if [ -z "$resp" -o "$resp" == "null" ]; then
-      exit 1
+    match=0
   fi
   if [ $resp -ne 1 ]; then
+    match=0
+  fi
+  if [ $match -eq 0 ]; then
+    if [ "$matchtype" == "all" ]; then
+      echoerr "User ${user} is not in required group ${groupHref}, denying access"
       exit 1
+    fi
+    continue
+  else
+    if [ "$matchtype" == "any" ]; then
+      echoerr "User ${user} is in group ${groupHref}, allowing access"
+      exit 0
+    fi
+    matches="${matches}${groupHref}"
   fi
 done
 
+if [ -z "$matches" ]; then
+  echoerr "User ${user} is not a member of any groups, denying access"
+  exit 1
+fi
+
+# Since matches is not empty and we're still here, we must be using "all" match type
+echoerr "User ${user} is member of all required groups, allowing access"
 exit 0

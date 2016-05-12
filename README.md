@@ -101,7 +101,7 @@ extend it to something like:
         DocumentRoot /var/www/vhosts/foo.com
 
         DefineExternalAuth stormpath pipe "/PATH/TO/stormpath.sh /PATH/TO/YOUR/stormpath/apiKey.properties YOUR_STORMPATH_APPLICATION_HREF"
-        DefineExternalGroup stormpath pipe "/PATH/TO/stormpath-group.sh /PATH/TO/YOUR/stormpath/apiKey.properties USERNAME_OR_EMAIL"
+        DefineExternalGroup stormpath pipe "/PATH/TO/stormpath-group.sh /PATH/TO/YOUR/stormpath/apiKey.properties USERNAME_OR_EMAIL ANY_OR_ALL"
 
         <Directory /var/www/vhosts/foo.com/downloads>
             AuthType Basic
@@ -121,7 +121,5 @@ extend it to something like:
     where:
 
     * `USERNAME_OR_EMAIL` is either `username` if your users are logging in using their username, or `email` if your users are logging in using their email
-    * `YOUR_STORMPATH_GROUP_HREF` is the fully qualified href of your Stormpath
-    group record in which the user must be to be authorized, or a list of
-    space-separeted group hrefs if user must be in more than one group; note
-    that this href (or list) must not be in double quotes.
+    * `YOUR_STORMPATH_GROUP_HREF` is the fully qualified href of your Stormpath group record in which the user must be to be authorized, or a list of space-separeted group hrefs; note that this href (or list) must not be in double quotes.
+    * `ANY_OR_ALL` is an optional keyword and must be either `all` (the default if not specified), meaning the user must be a member of all listed groups, or `any`, meaning the user must be a member of at least one listed group.
